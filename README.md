@@ -1,7 +1,7 @@
 ## build-sid
 ### Create a Debian sid minimal live system similar to 'DebianDog'
 
-See more info about usage and changes/fixes at https://forum.puppylinux.com Build-sid github project    
+See more info about usage and changes/fixes at https://forum.puppylinux.com/viewtopic.php?p=172966#p172966       
 
 This works very similar as the 'mklive-sid' script:    
 https://forum.puppylinux.com/viewtopic.php?t=824     

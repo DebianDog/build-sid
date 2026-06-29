@@ -1,0 +1,57 @@
+#!/bin/bash
+
+sleep 7
+WM=$(wmctrl -m | grep Name: | awk '{ print $2 }') # get window-manager name
+
+# check for openbox as window-manager and if feh is installed
+if [ "$WM" = "Openbox" ] && [ -n $(which feh) ]; then
+while true; do 
+if [ -z "$(pidof xfdesktop)" ]; then
+sleep 1
+else
+break
+fi
+done
+
+# start conky
+if [ -f /mnt/live/tmp/modules ]; then
+conky -c ~/.conkyrc-port &
+else
+conky -c ~/.conkyrc-live &
+fi
+
+# get current wallpaper
+WALLPAPER=$(xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor$(xrandr --current | grep -w connected | awk '{print $1}')/workspace0/last-image)
+STYLE=$(xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor$(xrandr --current | grep -w connected | awk '{print $1}')/workspace0/image-style)
+
+# make conky transparent using feh
+if [ "$STYLE" = "3" ]; then
+feh --bg-scale "$WALLPAPER"
+#elif [ "$STYLE" = "5" ]; then
+else															
+feh --bg-fill "$WALLPAPER"
+fi
+
+while true; do
+WALLPAPER=$(xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor$(xrandr --current | grep -w connected | awk '{print $1}')/workspace0/last-image)
+STYLE=$(xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor$(xrandr --current | grep -w connected | awk '{print $1}')/workspace0/image-style)
+
+  if [[ "$OLDWALLPAPER" != "$WALLPAPER" ]] || [[ "$OLDSTYLE" != "$STYLE" ]]; then
+WALLPAPER=$(xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor$(xrandr --current | grep -w connected | awk '{print $1}')/workspace0/last-image)
+STYLE=$(xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor$(xrandr --current | grep -w connected | awk '{print $1}')/workspace0/image-style)
+
+# make conky transparent using feh
+if [ "$STYLE" = "3" ]; then
+feh --bg-scale "$WALLPAPER"
+#elif [ "$STYLE" = "5" ]; then
+else															
+feh --bg-fill "$WALLPAPER"
+fi
+  fi
+
+OLDWALLPAPER=$WALLPAPER
+OLDSTYLE=$STYLE
+sleep 3
+done
+fi
+
